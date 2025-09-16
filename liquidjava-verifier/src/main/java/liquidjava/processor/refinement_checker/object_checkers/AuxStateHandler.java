@@ -80,7 +80,7 @@ public class AuxStateHandler {
         List<GhostFunction> sets = getDifferentSets(tc, klass); // ??
         for (GhostFunction sg : sets) {
             if (sg.getReturnType().toString().equals("int")) {
-                Predicate p = Predicate.createEquals(Predicate.createInvocation(sg.getName(), s),
+                Predicate p = Predicate.createEquals(Predicate.createInvocation(sg.getQualifiedName(), s),
                         Predicate.createLit("0", Utils.INT));
                 c = Predicate.createConjunction(c, p);
             } else {
@@ -229,8 +229,8 @@ public class AuxStateHandler {
         Predicate c = p;
         for (GhostFunction gf : sets) {
             Predicate eq = Predicate.createEquals( // gf.name == old(gf.name(this))
-                    Predicate.createInvocation(gf.getName(), th),
-                    Predicate.createInvocation(gf.getName(), Predicate.createInvocation(Utils.OLD, th)));
+                    Predicate.createInvocation(gf.getQualifiedName(), th),
+                    Predicate.createInvocation(gf.getQualifiedName(), Predicate.createInvocation(Utils.OLD, th)));
             c = Predicate.createConjunction(c, eq);
         }
         return c;

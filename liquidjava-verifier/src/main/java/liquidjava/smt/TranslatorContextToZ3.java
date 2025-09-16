@@ -128,6 +128,7 @@ public class TranslatorContextToZ3 {
         List<CtTypeReference<?>> paramTypes = gh.getParametersTypes();
         Sort ret = getSort(z3, gh.getReturnType().toString());
         Sort[] d = paramTypes.stream().map(t -> t.toString()).map(t -> getSort(z3, t)).toArray(Sort[]::new);
-        funcTranslation.put(gh.getName(), z3.mkFuncDecl(gh.getName(), d, ret));
+        String name = gh.getQualifiedName();
+        funcTranslation.put(name, z3.mkFuncDecl(name, d, ret));
     }
 }

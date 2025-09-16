@@ -95,8 +95,7 @@ public class VCChecker {
             // printError(premises, expectedType, element, map, e.getMessage());
         }
 
-        // System.out.println("premise: " + premises.toString() + "\nexpectation: " +
-        // et.toString());
+        // System.out.println("premise: " + premises.toString() + "\nexpectation: " + et.toString());
         return smtChecks(premises, et, p);
     }
 
@@ -207,6 +206,7 @@ public class VCChecker {
         try {
             new SMTEvaluator().verifySubtype(cSMT, expectedType, context);
         } catch (TypeCheckError e) {
+            // System.out.println("TypeCheckError: " + e.getMessage());
             return false;
         } catch (Exception e) {
             // System.err.println("Unknown error:"+e.getMessage());

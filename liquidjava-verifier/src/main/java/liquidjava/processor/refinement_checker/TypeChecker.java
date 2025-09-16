@@ -194,8 +194,7 @@ public abstract class TypeChecker extends CtScanner {
         if (klass != null) {
             CtTypeReference<?> ret = factory.Type().INTEGER_PRIMITIVE;
             List<String> params = Arrays.asList(klass.getSimpleName());
-            GhostFunction gh = new GhostFunction(
-                    String.format("%s_state%d", klass.getSimpleName().toLowerCase(), order), params, ret, factory,
+            GhostFunction gh = new GhostFunction(String.format("state%d", order), params, ret, factory,
                     klass.getQualifiedName(), klass.getSimpleName());
             return Optional.of(gh);
         }
@@ -273,7 +272,6 @@ public abstract class TypeChecker extends CtScanner {
 
         cEt = cEt.substituteVariable(WILD_VAR, simpleName);
         Predicate cet = cEt.substituteVariable(WILD_VAR, simpleName);
-
         String newName = String.format(instanceFormat, simpleName, context.getCounter());
         Predicate correctNewRefinement = refinementFound.substituteVariable(WILD_VAR, newName);
         correctNewRefinement = correctNewRefinement.substituteVariable(THIS, newName);

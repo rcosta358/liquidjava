@@ -16,16 +16,16 @@ public class GhostFunction {
     private String klassName;
 
     public GhostFunction(GhostDTO f, Factory factory, String path, String klass) {
-        name = f.getName();
-        return_type = Utils.getType(f.getReturn_type().equals(klass) ? path : f.getReturn_type(), factory);
-        param_types = new ArrayList<>();
+        this.name = f.getName();
+        this.return_type = Utils.getType(f.getReturn_type().equals(klass) ? path : f.getReturn_type(), factory);
+        this.param_types = new ArrayList<>();
         for (String t : f.getParam_types()) {
-            param_types.add(Utils.getType(t.equals(klass) ? path : t, factory));
+            this.param_types.add(Utils.getType(t.equals(klass) ? path : t, factory));
         }
+        this.klassName = klass;
     }
 
-    public GhostFunction(String name, List<String> param_types, CtTypeReference<?> return_type, Factory factory,
-            String path, String klass) {
+    public GhostFunction(String name, List<String> param_types, CtTypeReference<?> return_type, Factory factory, String path, String klass) {
         this.name = name;
         this.return_type = Utils.getType(return_type.toString().equals(klass) ? path : return_type.toString(), factory);
         this.param_types = new ArrayList<>();
@@ -69,5 +69,9 @@ public class GhostFunction {
 
     public String getParentClassName() {
         return klassName;
+    }
+
+    public String getQualifiedName() {
+       return String.format("%s.%s", this.klassName, this.name);
     }
 }

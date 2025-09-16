@@ -95,7 +95,8 @@ public class TypeInfer {
     }
 
     private static Optional<CtTypeReference<?>> functionType(Context ctx, Factory factory, FunctionInvocation e) {
-        Optional<GhostFunction> gh = ctx.getGhosts().stream().filter(g -> g.getName().equals(e.getName())).findAny();
+        Optional<GhostFunction> gh = ctx.getGhosts().stream().filter(g -> g.getQualifiedName().equals(e.getName()))
+                .findAny();
         return gh.map(i -> i.getReturnType());
     }
 

@@ -54,8 +54,13 @@ import rj.grammar.RJParser.VarContext;
  * @author cgamboa
  */
 public class CreateASTVisitor {
+    String parentClass;
 
-    public static Expression create(ParseTree rc) {
+    public CreateASTVisitor(String parentClass) {
+        this.parentClass = parentClass;
+    }
+
+    public Expression create(ParseTree rc) {
         if (rc instanceof ProgContext)
             return progCreate((ProgContext) rc);
         else if (rc instanceof StartContext)
@@ -72,24 +77,23 @@ public class CreateASTVisitor {
             return functionCallCreate((FunctionCallContext) rc);
         else if (rc instanceof LiteralContext)
             return literalCreate((LiteralContext) rc);
-
         return null;
     }
 
-    private static Expression progCreate(ProgContext rc) {
+    private Expression progCreate(ProgContext rc) {
         if (rc.start() != null)
             return create(rc.start());
         return null;
     }
 
-    private static Expression startCreate(ParseTree rc) {
+    private Expression startCreate(ParseTree rc) {
         if (rc instanceof StartPredContext)
             return create(((StartPredContext) rc).pred());
         // alias and ghost do not have evaluation
         return null;
     }
 
-    private static Expression predCreate(ParseTree rc) {
+    private Expression predCreate(ParseTree rc) {
         if (rc instanceof PredGroupContext)
             return new GroupExpression(create(((PredGroupContext) rc).pred()));
         else if (rc instanceof PredNegateContext)
@@ -104,7 +108,7 @@ public class CreateASTVisitor {
             return create(((PredExpContext) rc).exp());
     }
 
-    private static Expression expCreate(ParseTree rc) {
+    private Expression expCreate(ParseTree rc) {
         if (rc instanceof ExpGroupContext)
             return new GroupExpression(create(((ExpGroupContext) rc).exp()));
         else if (rc instanceof ExpBoolContext) {
@@ -116,7 +120,7 @@ public class CreateASTVisitor {
         }
     }
 
-    private static Expression operandCreate(ParseTree rc) {
+    private Expression operandCreate(ParseTree rc) {
         if (rc instanceof OpLiteralContext)
             return create(((OpLiteralContext) rc).literalExpression());
         else if (rc instanceof OpArithContext)
@@ -135,7 +139,7 @@ public class CreateASTVisitor {
         return null;
     }
 
-    private static Expression literalExpressionCreate(ParseTree rc) {
+    private Expression literalExpressionCreate(ParseTree rc) {
         if (rc instanceof LitGroupContext)
             return new GroupExpression(create(((LitGroupContext) rc).literalExpression()));
         else if (rc instanceof LitContext)
@@ -150,11 +154,15 @@ public class CreateASTVisitor {
         }
     }
 
-    private static Expression functionCallCreate(FunctionCallContext rc) {
+    private Expression functionCallCreate(FunctionCallContext rc) {
         if (rc.ghostCall() != null) {
             GhostCallContext gc = rc.ghostCall();
+            String name = gc.ID().getText();
+            String parentKlass = this.parentClass.replace("Refinements", ""); // FIXME!
+            String qualifiedName = String.format("%s.%s", parentKlass, name);
+            // System.out.println("Ghost function call: " + qualifiedName);
             List<Expression> le = getArgs(gc.args());
-            return new FunctionInvocation(gc.ID().getText(), le);
+            return new FunctionInvocation(qualifiedName, le);
         } else {
             AliasCallContext gc = rc.aliasCall();
             List<Expression> le = getArgs(gc.args());
@@ -162,7 +170,7 @@ public class CreateASTVisitor {
         }
     }
 
-    private static List<Expression> getArgs(ArgsContext args) {
+    private List<Expression> getArgs(ArgsContext args) {
         List<Expression> le = new ArrayList<>();
         if (args != null)
             for (PredContext oc : args.pred()) {
@@ -171,7 +179,7 @@ public class CreateASTVisitor {
         return le;
     }
 
-    private static Expression literalCreate(LiteralContext literalContext) {
+    private Expression literalCreate(LiteralContext literalContext) {
         if (literalContext.BOOL() != null)
             return new LiteralBoolean(literalContext.BOOL().getText());
         else if (literalContext.STRING() != null)
