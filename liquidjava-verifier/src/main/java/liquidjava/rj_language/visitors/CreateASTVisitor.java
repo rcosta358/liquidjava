@@ -14,6 +14,8 @@ import liquidjava.rj_language.ast.LiteralReal;
 import liquidjava.rj_language.ast.LiteralString;
 import liquidjava.rj_language.ast.UnaryExpression;
 import liquidjava.rj_language.ast.Var;
+import liquidjava.utils.Utils;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.NotImplementedException;
 import rj.grammar.RJParser.AliasCallContext;
@@ -158,8 +160,8 @@ public class CreateASTVisitor {
         if (rc.ghostCall() != null) {
             GhostCallContext gc = rc.ghostCall();
             String name = gc.ID().getText();
-            String parentKlass = this.parentClass.replace("Refinements", ""); // FIXME!
-            String qualifiedName = String.format("%s.%s", parentKlass, name);
+            String parentKlass = this.parentClass;//.replace("Refinements", ""); // FIXME!
+            String qualifiedName = Utils.qualifyName(parentKlass, name);
             // System.out.println("Ghost function call: " + qualifiedName);
             List<Expression> le = getArgs(gc.args());
             return new FunctionInvocation(qualifiedName, le);

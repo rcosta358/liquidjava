@@ -32,6 +32,7 @@ public class SMTEvaluator {
                 }
             }
             // System.out.println("result of SMT: Ok!");
+            System.out.println(subRef + " <: " + supRef);
 
         } catch (SyntaxException e1) {
             System.out.println("Could not parse: " + toVerify);

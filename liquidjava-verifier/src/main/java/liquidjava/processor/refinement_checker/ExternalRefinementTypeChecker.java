@@ -40,7 +40,8 @@ public class ExternalRefinementTypeChecker extends TypeChecker {
 
         Optional<String> externalRefinements = getExternalRefinement(intrface);
         if (externalRefinements.isPresent()) {
-            prefix = externalRefinements.get();
+            prefix = externalRefinements.get(); // java.io.InputStreamReader
+            // intrface.getQualifiedName()(); // com.example.InputStreamReaderRefinements
             try {
                 getRefinementFromAnnotation(intrface);
             } catch (ParsingException e) {
@@ -104,15 +105,14 @@ public class ExternalRefinementTypeChecker extends TypeChecker {
 
     @Override
     protected Optional<GhostFunction> createStateGhost(int order, CtElement element) {
-        String[] a = prefix.split("\\.");
-        String klass = a[a.length - 1];
-        if (klass != null) {
-            CtTypeReference<?> ret = factory.Type().INTEGER_PRIMITIVE;
-            List<String> params = Arrays.asList(klass);
-            GhostFunction gh = new GhostFunction(String.format("state%d", order), params, ret, factory, prefix, klass);
-            return Optional.of(gh);
-        }
-        return Optional.empty();
+        String klass = ((CtInterface<?>) element).getSimpleName(); // InputStreamReaderRefinements
+        // String klass = this.getSimpleClassName(element); // InputStreamReader
+        System.out.println("Creating state ghost for " + klass);
+        CtTypeReference<?> ret = factory.Type().INTEGER_PRIMITIVE;
+        List<String> params = Arrays.asList(klass);
+        GhostFunction gh = new GhostFunction(String.format("state%d", order), params, ret, factory, prefix, klass);
+        return Optional.of(gh);
+
     }
 
     @Override

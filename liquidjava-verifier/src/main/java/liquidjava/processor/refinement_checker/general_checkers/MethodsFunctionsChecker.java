@@ -100,7 +100,6 @@ public class MethodsFunctionsChecker {
         String constructorName = "<init>";
         String[] pac = prefix.split("\\.");
         String k = pac[pac.length - 1];
-
         String functionName = String.format("%s.%s", prefix, method.getSimpleName());
         if (k.equals(method.getSimpleName())) { // is a constructor
             functionName = String.format(constructorName);

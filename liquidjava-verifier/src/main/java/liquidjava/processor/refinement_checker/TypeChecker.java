@@ -162,7 +162,7 @@ public abstract class TypeChecker extends CtScanner {
         List<CtTypeReference<?>> param = Arrays.asList(factory.Type().createReference(qn));
 
         CtTypeReference<?> r = factory.Type().createReference(gd.getReturn_type());
-        GhostState gs = new GhostState(gd.getName(), param, r, qn);
+        GhostState gs = new GhostState(gd.getName(), param, r, sn);
         context.addToGhostClass(sn, gs);
     }
 

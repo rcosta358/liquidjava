@@ -72,6 +72,6 @@ public class GhostFunction {
     }
 
     public String getQualifiedName() {
-       return String.format("%s.%s", this.klassName, this.name);
+        return Utils.qualifyName(klassName, name);
     }
 }
